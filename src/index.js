@@ -130,58 +130,60 @@ function wrap(func) {
   };
 }
 
-export default {
-  canvas() {
-    var canvas = document.createElement('canvas');
-    try {
-      store.set({ gl: canvas.getContext('experimental-webgl', { premultipliedAlpha: false }) });
-    } catch (e) {
-      store.set({ gl: null });
-    }
-    var gl = store.get('gl');
-    if (!gl) {
-      throw 'This browser does not support WebGL';
-    }
-    canvas._ = {
-      gl: gl,
-      isInitialized: false,
-      texture: null,
-      spareTexture: null,
-      flippedShader: null
-    };
-
-    // Core methods
-    canvas.texture = wrap(texture);
-    canvas.draw = wrap(draw);
-    canvas.update = wrap(update);
-    canvas.replace = wrap(replace);
-    canvas.contents = wrap(contents);
-    canvas.getPixelArray = wrap(getPixelArray);
-
-    // // Filter methods
-    canvas.brightnessContrast = wrap(filters.brightnessContrast);
-    canvas.hexagonalPixelate = wrap(filters.hexagonalPixelate);
-    canvas.hueSaturation = wrap(filters.hueSaturation);
-    canvas.colorHalftone = wrap(filters.colorHalftone);
-    canvas.triangleBlur = wrap(filters.triangleBlur);
-    canvas.unsharpMask = wrap(filters.unsharpMask);
-    canvas.perspective = wrap(filters.perspective);
-    canvas.matrixWarp = wrap(filters.matrixWarp);
-    canvas.bulgePinch = wrap(filters.bulgePinch);
-    canvas.tiltShift = wrap(filters.tiltShift);
-    canvas.dotScreen = wrap(filters.dotScreen);
-    canvas.edgeWork = wrap(filters.edgeWork);
-    canvas.lensBlur = wrap(filters.lensBlur);
-    canvas.zoomBlur = wrap(filters.zoomBlur);
-    canvas.noise = wrap(filters.noise);
-    canvas.denoise = wrap(filters.denoise);
-    canvas.curves = wrap(filters.curves);
-    canvas.swirl = wrap(filters.swirl);
-    canvas.ink = wrap(filters.ink);
-    canvas.vignette = wrap(filters.vignette);
-    canvas.vibrance = wrap(filters.vibrance);
-    canvas.sepia = wrap(filters.sepia);
-
-    return canvas;
+export function createDrawer() {
+  var canvas = document.createElement('canvas');
+  const drawer = canvas;
+  try {
+    store.set({ gl: canvas.getContext('webgl', { premultipliedAlpha: false }) });
+  } catch (e) {
+    store.set({ gl: null });
   }
-};
+  var gl = store.get('gl');
+  if (!gl) {
+    throw 'This browser does not support WebGL';
+  }
+  drawer._ = {
+    gl: gl,
+    isInitialized: false,
+    texture: null,
+    spareTexture: null,
+    flippedShader: null
+  };
+
+  drawer.getCanvas = () => canvas;
+
+  // Core methods
+  drawer.texture = wrap(texture);
+  drawer.draw = wrap(draw);
+  drawer.update = wrap(update);
+  drawer.replace = wrap(replace);
+  drawer.contents = wrap(contents);
+  drawer.getPixelArray = wrap(getPixelArray);
+
+  // // Filter methods
+  drawer.brightnessContrast = wrap(filters.brightnessContrast);
+  drawer.hexagonalPixelate = wrap(filters.hexagonalPixelate);
+  drawer.hueSaturation = wrap(filters.hueSaturation);
+  drawer.colorHalftone = wrap(filters.colorHalftone);
+  drawer.triangleBlur = wrap(filters.triangleBlur);
+  drawer.unsharpMask = wrap(filters.unsharpMask);
+  drawer.perspective = wrap(filters.perspective);
+  drawer.matrixWarp = wrap(filters.matrixWarp);
+  drawer.bulgePinch = wrap(filters.bulgePinch);
+  drawer.tiltShift = wrap(filters.tiltShift);
+  drawer.dotScreen = wrap(filters.dotScreen);
+  drawer.edgeWork = wrap(filters.edgeWork);
+  drawer.lensBlur = wrap(filters.lensBlur);
+  drawer.zoomBlur = wrap(filters.zoomBlur);
+  drawer.noise = wrap(filters.noise);
+  drawer.denoise = wrap(filters.denoise);
+  drawer.curves = wrap(filters.curves);
+  drawer.swirl = wrap(filters.swirl);
+  drawer.ink = wrap(filters.ink);
+  drawer.vignette = wrap(filters.vignette);
+  drawer.vibrance = wrap(filters.vibrance);
+  drawer.sepia = wrap(filters.sepia);
+  drawer.negative = wrap(filters.negative);
+
+  return drawer;
+}
