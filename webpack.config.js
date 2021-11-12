@@ -1,45 +1,38 @@
 /* global __dirname, require, module */
 
-const webpack = require('webpack');
+const webpack = require("webpack");
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
-const path = require('path');
-const env = require('yargs').argv.env; // use --env with webpack 2
+const path = require("path");
 
-const libraryName = 'fx';
-const fileName = 'glfx-es6';
+const libraryName = "glfx";
+const fileName = "glfx";
 
-let plugins = [], outputFile;
-
-if (env === 'minified') {
-  plugins.push(new UglifyJsPlugin({ minimize: true }));
-  outputFile = fileName + '.min.js';
-} else {
-  outputFile = fileName + '.js';
-}
+const plugins = [new UglifyJsPlugin({ minimize: true })];
+const outputFile = fileName + ".min.js";
+const outputDirectory = "/package/";
 
 module.exports = {
-  entry: __dirname + '/src/index.js',
-  devtool: 'source-map',
+  entry: __dirname + "/src/index.js",
   output: {
-    path: __dirname + '/dist',
+    path: __dirname + outputDirectory,
     filename: outputFile,
-    publicPath: '/dist/',
+    publicPath: outputDirectory,
     library: libraryName,
-    libraryTarget: 'umd',
-    umdNamedDefine: true
+    libraryTarget: "umd",
+    umdNamedDefine: true,
   },
   module: {
     rules: [
       {
         test: /\.js/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      }
-    ]
+        loader: "babel-loader",
+        exclude: /node_modules/,
+      },
+    ],
   },
   resolve: {
-    modules: [path.resolve('./node_modules'), path.resolve('./src')],
-    extensions: ['.json', '.js']
+    modules: [path.resolve("./node_modules"), path.resolve("./src")],
+    extensions: [".json", ".js"],
   },
-  plugins: plugins
+  plugins: plugins,
 };

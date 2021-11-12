@@ -1,11 +1,10 @@
 {
-  "name": "glfx-es6",
+  "name": "glfx",
   "version": "0.0.1",
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
-  "repository": "git@github.com:daviestar/glfx-es6.git",
-  "author": "David McArthur <daviestar@gmail.com>",
+  "repository": "git@github.com:krambono/glfx.git",
   "license": "MIT",
   "scripts": {
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",

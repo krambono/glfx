@@ -5,3 +5,6 @@ dist
 
 yarn-*.log
 yarn.lock
+
+glfx.min.js
+**.tgz
