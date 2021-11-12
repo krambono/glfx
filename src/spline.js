@@ -1,7 +1,6 @@
 // from SplineInterpolator.cs in the Paint.NET source code
 
 export default class SplineInterpolator {
-  
   constructor(points) {
     var n = points.length;
     this.xa = [];
@@ -9,7 +8,7 @@ export default class SplineInterpolator {
     this.u = [];
     this.y2 = [];
 
-    points.sort(function(a, b) {
+    points.sort(function (a, b) {
       return a[0] - b[0];
     });
     for (var i = 0; i < n; i++) {
@@ -30,10 +29,10 @@ export default class SplineInterpolator {
       this.y2[i] = (sig - 1.0) / p;
 
       var ddydx =
-          (this.ya[i + 1] - this.ya[i]) / (this.xa[i + 1] - this.xa[i]) -
-          (this.ya[i] - this.ya[i - 1]) / (this.xa[i] - this.xa[i - 1]);
+        (this.ya[i + 1] - this.ya[i]) / (this.xa[i + 1] - this.xa[i]) -
+        (this.ya[i] - this.ya[i - 1]) / (this.xa[i] - this.xa[i - 1]);
 
-      this.u[i] = (6.0 * ddydx / wx - sig * this.u[i - 1]) / p;
+      this.u[i] = ((6.0 * ddydx) / wx - sig * this.u[i - 1]) / p;
     }
 
     this.y2[n - 1] = 0;
@@ -43,7 +42,7 @@ export default class SplineInterpolator {
       this.y2[i] = this.y2[i] * this.y2[i + 1] + this.u[i];
     }
   }
-  
+
   interpolate(x) {
     var n = this.ya.length;
     var klo = 0;
@@ -69,8 +68,10 @@ export default class SplineInterpolator {
     var b = (x - this.xa[klo]) / h;
 
     // Cubic spline polynomial is now evaluated.
-    return a * this.ya[klo] + b * this.ya[khi] +
-      ((a * a * a - a) * this.y2[klo] + (b * b * b - b) * this.y2[khi]) * (h * h) / 6.0;
+    return (
+      a * this.ya[klo] +
+      b * this.ya[khi] +
+      (((a * a * a - a) * this.y2[klo] + (b * b * b - b) * this.y2[khi]) * (h * h)) / 6.0
+    );
   }
-  
 }

@@ -1,6 +1,6 @@
-import {warpShader} from '../common'
-import {simpleShader, clamp} from '../../util'
-import * as store from '../../store'
+import { warpShader } from '../common';
+import { simpleShader, clamp } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter         Bulge / Pinch
@@ -10,13 +10,17 @@ import * as store from '../../store'
  * @param radius   The radius of the circle of effect.
  * @param strength -1 to 1 (-1 is strong pinch, 0 is no effect, 1 is strong bulge)
  */
-export default function(centerX, centerY, radius, strength) {
-  var gl = store.get('gl')
-  gl.bulgePinch = gl.bulgePinch || warpShader('\
+export default function (centerX, centerY, radius, strength) {
+  var gl = store.get('gl');
+  gl.bulgePinch =
+    gl.bulgePinch ||
+    warpShader(
+      '\
     uniform float radius;\
     uniform float strength;\
     uniform vec2 center;\
-  ', '\
+  ',
+      '\
     coord -= center;\
     float distance = length(coord);\
     if (distance < radius) {\
@@ -28,7 +32,8 @@ export default function(centerX, centerY, radius, strength) {
       }\
     }\
     coord += center;\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.bulgePinch, {
     radius: radius,

@@ -1,15 +1,19 @@
-import Shader from '../../shader'
-import {simpleShader, clamp} from '../../util'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader, clamp } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter       Vibrance
  * @description  Modifies the saturation of desaturated colors, leaving saturated colors unmodified.
  * @param amount -1 to 1 (-1 is minimum vibrance, 0 is no change, and 1 is maximum vibrance)
  */
-export default function(amount) {
-  var gl = store.get('gl')
-  gl.vibrance = gl.vibrance || new Shader(null, '\
+export default function (amount) {
+  var gl = store.get('gl');
+  gl.vibrance =
+    gl.vibrance ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform float amount;\
     varying vec2 texCoord;\
@@ -21,7 +25,8 @@ export default function(amount) {
       color.rgb = mix(color.rgb, vec3(mx), amt);\
       gl_FragColor = color;\
     }\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.vibrance, {
     amount: clamp(-1, amount, 1)

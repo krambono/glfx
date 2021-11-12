@@ -1,6 +1,6 @@
-import Shader from '../../shader'
-import {simpleShader} from '../../util'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter        Hexagonal Pixelate
@@ -10,9 +10,13 @@ import * as store from '../../store'
  * @param centerY The y coordinate of the pattern center.
  * @param scale   The width of an individual tile, in pixels.
  */
-export default function(centerX, centerY, scale) {
-  var gl = store.get('gl')
-  gl.hexagonalPixelate = gl.hexagonalPixelate || new Shader(null, '\
+export default function (centerX, centerY, scale) {
+  var gl = store.get('gl');
+  gl.hexagonalPixelate =
+    gl.hexagonalPixelate ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform vec2 center;\
     uniform float scale;\
@@ -52,7 +56,8 @@ export default function(centerX, centerY, scale) {
       choice *= scale / texSize;\
       gl_FragColor = texture2D(texture, choice + center / texSize);\
     }\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.hexagonalPixelate, {
     center: [centerX, centerY],

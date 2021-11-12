@@ -1,7 +1,7 @@
-import Shader from '../../shader'
-import {simpleShader} from '../../util'
-import {randomShaderFunc} from '../common'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader } from '../../util';
+import { randomShaderFunc } from '../common';
+import * as store from '../../store';
 
 /**
  * @filter         Zoom Blur
@@ -11,15 +11,21 @@ import * as store from '../../store'
  * @param strength The strength of the blur. Values in the range 0 to 1 are usually sufficient,
  *                 where 0 doesn't change the image and 1 creates a highly blurred image.
  */
-export default function(centerX, centerY, strength) {
-  var gl = store.get('gl')
-  gl.zoomBlur = gl.zoomBlur || new Shader(null, '\
+export default function (centerX, centerY, strength) {
+  var gl = store.get('gl');
+  gl.zoomBlur =
+    gl.zoomBlur ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform vec2 center;\
     uniform float strength;\
     uniform vec2 texSize;\
     varying vec2 texCoord;\
-    ' + randomShaderFunc + '\
+    ' +
+        randomShaderFunc +
+        '\
     void main() {\
       vec4 color = vec4(0.0);\
       float total = 0.0;\
@@ -45,7 +51,8 @@ export default function(centerX, centerY, strength) {
       /* switch back from pre-multiplied alpha */\
       gl_FragColor.rgb /= gl_FragColor.a + 0.00001;\
     }\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.zoomBlur, {
     center: [centerX, centerY],

@@ -1,7 +1,7 @@
-import Shader from '../../shader'
-import {simpleShader} from '../../util'
-import {randomShaderFunc} from '../common'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader } from '../../util';
+import { randomShaderFunc } from '../common';
+import * as store from '../../store';
 
 /**
  * @filter       Edge Work
@@ -9,13 +9,19 @@ import * as store from '../../store'
  *               copies of the image blurred with different radii.
  * @param radius The radius of the effect in pixels.
  */
-export default function(radius) {
-  var gl = store.get('gl')
-  gl.edgeWork1 = gl.edgeWork1 || new Shader(null, '\
+export default function (radius) {
+  var gl = store.get('gl');
+  gl.edgeWork1 =
+    gl.edgeWork1 ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform vec2 delta;\
     varying vec2 texCoord;\
-    ' + randomShaderFunc + '\
+    ' +
+        randomShaderFunc +
+        '\
     void main() {\
       vec2 color = vec2(0.0);\
       vec2 total = vec2(0.0);\
@@ -38,13 +44,20 @@ export default function(radius) {
       }\
       gl_FragColor = vec4(color / total, 0.0, 1.0);\
     }\
-  ');
-  
-  gl.edgeWork2 = gl.edgeWork2 || new Shader(null, '\
+  '
+    );
+
+  gl.edgeWork2 =
+    gl.edgeWork2 ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform vec2 delta;\
     varying vec2 texCoord;\
-    ' + randomShaderFunc + '\
+    ' +
+        randomShaderFunc +
+        '\
     void main() {\
       vec2 color = vec2(0.0);\
       vec2 total = vec2(0.0);\
@@ -67,7 +80,8 @@ export default function(radius) {
       float c = clamp(10000.0 * (color.y / total.y - color.x / total.x) + 0.5, 0.0, 1.0);\
       gl_FragColor = vec4(c, c, c, 1.0);\
     }\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.edgeWork1, {
     delta: [radius / this.width, 0]

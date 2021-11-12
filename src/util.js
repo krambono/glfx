@@ -1,8 +1,8 @@
-import SplineInterpolator from './spline'
+import SplineInterpolator from './spline';
 
 export function simpleShader(shader, uniforms, textureIn, textureOut) {
   (textureIn || this._.texture).use();
-  this._.spareTexture.drawTo(function() {
+  this._.spareTexture.drawTo(function () {
     shader.uniforms(uniforms).drawRect();
   });
   this._.spareTexture.swapWith(textureOut || this._.texture);

@@ -1,6 +1,6 @@
-import {warpShader} from '../common'
-import {simpleShader} from '../../util'
-import * as store from '../../store'
+import { warpShader } from '../common';
+import { simpleShader } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter        Swirl
@@ -11,13 +11,17 @@ import * as store from '../../store'
  * @param angle   The angle in radians that the pixels in the center of
  *                the circular region will be rotated by.
  */
-export default function(centerX, centerY, radius, angle) {
+export default function (centerX, centerY, radius, angle) {
   var gl = store.get('gl');
-  gl.swirl = gl.swirl || warpShader('\
+  gl.swirl =
+    gl.swirl ||
+    warpShader(
+      '\
     uniform float radius;\
     uniform float angle;\
     uniform vec2 center;\
-  ', '\
+  ',
+      '\
     coord -= center;\
     float distance = length(coord);\
     if (distance < radius) {\
@@ -31,7 +35,8 @@ export default function(centerX, centerY, radius, angle) {
       );\
     }\
     coord += center;\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.swirl, {
     radius: radius,

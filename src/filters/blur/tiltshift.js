@@ -1,7 +1,7 @@
-import Shader from '../../shader'
-import {simpleShader} from '../../util'
-import {randomShaderFunc} from '../common'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader } from '../../util';
+import { randomShaderFunc } from '../common';
+import * as store from '../../store';
 
 /**
  * @filter               Tilt Shift
@@ -20,9 +20,13 @@ import * as store from '../../store'
  * @param blurRadius     The maximum radius of the pyramid blur.
  * @param gradientRadius The distance from the line at which the maximum blur radius is reached.
  */
-export default function(startX, startY, endX, endY, blurRadius, gradientRadius) {
-  var gl = store.get('gl')
-  gl.tiltShift = gl.tiltShift || new Shader(null, '\
+export default function (startX, startY, endX, endY, blurRadius, gradientRadius) {
+  var gl = store.get('gl');
+  gl.tiltShift =
+    gl.tiltShift ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform float blurRadius;\
     uniform float gradientRadius;\
@@ -31,7 +35,9 @@ export default function(startX, startY, endX, endY, blurRadius, gradientRadius) 
     uniform vec2 delta;\
     uniform vec2 texSize;\
     varying vec2 texCoord;\
-    ' + randomShaderFunc + '\
+    ' +
+        randomShaderFunc +
+        '\
     void main() {\
       vec4 color = vec4(0.0);\
       float total = 0.0;\
@@ -58,7 +64,8 @@ export default function(startX, startY, endX, endY, blurRadius, gradientRadius) 
       /* switch back from pre-multiplied alpha */\
       gl_FragColor.rgb /= gl_FragColor.a + 0.00001;\
     }\
-  ');
+  '
+    );
 
   var dx = endX - startX;
   var dy = endY - startY;

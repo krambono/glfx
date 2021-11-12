@@ -1,6 +1,6 @@
-import Shader from '../../shader'
-import {simpleShader, clamp, splineInterpolate} from '../../util'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader, clamp, splineInterpolate } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter      Curves
@@ -21,8 +21,8 @@ import * as store from '../../store'
  * @param blue  (optional) A list of points that define the function for the blue
  *              channel (just like for red).
  */
-export default function(red, green, blue) {
-  var gl = store.get('gl')
+export default function (red, green, blue) {
+  var gl = store.get('gl');
   // Create the ramp texture
   red = splineInterpolate(red);
   if (arguments.length == 1) {
@@ -38,7 +38,11 @@ export default function(red, green, blue) {
   this._.extraTexture.initFromBytes(256, 1, array);
   this._.extraTexture.use(1);
 
-  gl.curves = gl.curves || new Shader(null, '\
+  gl.curves =
+    gl.curves ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform sampler2D map;\
     varying vec2 texCoord;\
@@ -49,7 +53,8 @@ export default function(red, green, blue) {
       color.b = texture2D(map, vec2(color.b)).b;\
       gl_FragColor = color;\
     }\
-  ');
+  '
+    );
 
   gl.curves.textures({
     map: 1

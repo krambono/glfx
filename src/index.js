@@ -1,20 +1,20 @@
-import * as store from './store'
-import Texture from './texture'
-import Shader from './shader'
-import * as filters from './filters'
-export {splineInterpolate} from './util'
+import * as store from './store';
+import Texture from './texture';
+import Shader from './shader';
+import * as filters from './filters';
+export { splineInterpolate } from './util';
 
 function wrapTexture(texture) {
   return {
     _: texture,
-    loadContentsOf: function(element) {
+    loadContentsOf: function (element) {
       // Make sure that we're using the correct global WebGL context
-      store.set({gl: this._.gl});
+      store.set({ gl: this._.gl });
       this._.loadContentsOf(element);
     },
-    destroy: function() {
+    destroy: function () {
       // Make sure that we're using the correct global WebGL context
-      store.set({gl: this._.gl});
+      store.set({ gl: this._.gl });
       this._.destroy();
     }
   };
@@ -25,7 +25,7 @@ function texture(element) {
 }
 
 function initialize(width, height) {
-  var gl = store.get('gl')
+  var gl = store.get('gl');
   var type = gl.UNSIGNED_BYTE;
 
   // Go for floating point buffer textures if we can, it'll make the bokeh
@@ -36,7 +36,9 @@ function initialize(width, height) {
     var testTexture = new Texture(100, 100, gl.RGBA, gl.FLOAT);
     try {
       // Only use gl.FLOAT if we can render to it
-      testTexture.drawTo(function() { type = gl.FLOAT; });
+      testTexture.drawTo(function () {
+        type = gl.FLOAT;
+      });
     } catch (e) {}
     testTexture.destroy();
   }
@@ -48,13 +50,18 @@ function initialize(width, height) {
   this._.texture = new Texture(width, height, gl.RGBA, type);
   this._.spareTexture = new Texture(width, height, gl.RGBA, type);
   this._.extraTexture = this._.extraTexture || new Texture(0, 0, gl.RGBA, type);
-  this._.flippedShader = this._.flippedShader || new Shader(null, '\
+  this._.flippedShader =
+    this._.flippedShader ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     varying vec2 texCoord;\
     void main() {\
       gl_FragColor = texture2D(texture, vec2(texCoord.x, 1.0 - texCoord.y));\
     }\
-  ');
+  '
+    );
   this._.isInitialized = true;
 }
 
@@ -69,7 +76,7 @@ function draw(texture, width, height) {
   }
 
   texture._.use();
-  this._.texture.drawTo(function() {
+  this._.texture.drawTo(function () {
     Shader.getDefaultShader().drawRect();
   });
 
@@ -89,10 +96,10 @@ function replace(node) {
 }
 
 function contents() {
-  var gl = store.get('gl')
+  var gl = store.get('gl');
   var texture = new Texture(this._.texture.width, this._.texture.height, gl.RGBA, gl.UNSIGNED_BYTE);
   this._.texture.use();
-  texture.drawTo(function() {
+  texture.drawTo(function () {
     Shader.getDefaultShader().drawRect();
   });
   return wrapTexture(texture);
@@ -103,20 +110,20 @@ function contents() {
    Length of the array will be width * height * 4.
 */
 function getPixelArray() {
-  var gl = store.get('gl')
+  var gl = store.get('gl');
   var w = this._.texture.width;
   var h = this._.texture.height;
   var array = new Uint8Array(w * h * 4);
-  this._.texture.drawTo(function() {
+  this._.texture.drawTo(function () {
     gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, array);
   });
   return array;
 }
 
 function wrap(func) {
-  return function() {
+  return function () {
     // Make sure that we're using the correct global WebGL context
-    store.set({gl: this._.gl});
+    store.set({ gl: this._.gl });
 
     // Now that the context has been switched, we can call the wrapped function
     return func.apply(this, arguments);
@@ -127,20 +134,20 @@ export default {
   canvas() {
     var canvas = document.createElement('canvas');
     try {
-      store.set({gl: canvas.getContext('experimental-webgl', { premultipliedAlpha: false })});
+      store.set({ gl: canvas.getContext('experimental-webgl', { premultipliedAlpha: false }) });
     } catch (e) {
-      store.set({gl: null});
+      store.set({ gl: null });
     }
-    var gl = store.get('gl')
+    var gl = store.get('gl');
     if (!gl) {
       throw 'This browser does not support WebGL';
     }
     canvas._ = {
-        gl: gl,
-        isInitialized: false,
-        texture: null,
-        spareTexture: null,
-        flippedShader: null
+      gl: gl,
+      isInitialized: false,
+      texture: null,
+      spareTexture: null,
+      flippedShader: null
     };
 
     // Core methods
@@ -150,7 +157,7 @@ export default {
     canvas.replace = wrap(replace);
     canvas.contents = wrap(contents);
     canvas.getPixelArray = wrap(getPixelArray);
-    
+
     // // Filter methods
     canvas.brightnessContrast = wrap(filters.brightnessContrast);
     canvas.hexagonalPixelate = wrap(filters.hexagonalPixelate);
@@ -177,4 +184,4 @@ export default {
 
     return canvas;
   }
-}
+};

@@ -1,7 +1,7 @@
-import Shader from '../../shader'
-import {simpleShader, clamp} from '../../util'
-import {randomShaderFunc} from '../common'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader, clamp } from '../../util';
+import { randomShaderFunc } from '../common';
+import * as store from '../../store';
 
 /**
  * @filter           Lens Blur
@@ -19,14 +19,18 @@ import * as store from '../../store'
  * @param brightness -1 to 1 (the brightness of the bokeh, negative values will create dark bokeh)
  * @param angle      the rotation of the bokeh in radians
  */
-export default function(radius, brightness, angle) {
-  var gl = store.get('gl')
+export default function (radius, brightness, angle) {
+  var gl = store.get('gl');
   // All averaging is done on values raised to a power to make more obvious bokeh
   // (we will raise the average to the inverse power at the end to compensate).
   // Without this the image looks almost like a normal blurred image. This hack is
   // obviously not realistic, but to accurately simulate this we would need a high
   // dynamic range source photograph which we don't have.
-  gl.lensBlurPrePass = gl.lensBlurPrePass || new Shader(null, '\
+  gl.lensBlurPrePass =
+    gl.lensBlurPrePass ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform float power;\
     varying vec2 texCoord;\
@@ -35,16 +39,20 @@ export default function(radius, brightness, angle) {
       color = pow(color, vec4(power));\
       gl_FragColor = vec4(color);\
     }\
-  ');
+  '
+    );
 
-  var common = '\
+  var common =
+    '\
     uniform sampler2D texture0;\
     uniform sampler2D texture1;\
     uniform vec2 delta0;\
     uniform vec2 delta1;\
     uniform float power;\
     varying vec2 texCoord;\
-    ' + randomShaderFunc + '\
+    ' +
+    randomShaderFunc +
+    '\
     vec4 sample(vec2 delta) {\
       /* randomize the lookup values to hide the fixed number of samples */\
       float offset = random(vec3(delta, 151.7182), 0.0);\
@@ -60,28 +68,40 @@ export default function(radius, brightness, angle) {
     }\
   ';
 
-  gl.lensBlur0 = gl.lensBlur0 || new Shader(null, common + '\
+  gl.lensBlur0 =
+    gl.lensBlur0 || new Shader(null, common + '\
     void main() {\
       gl_FragColor = sample(delta0);\
     }\
   ');
-  gl.lensBlur1 = gl.lensBlur1 || new Shader(null, common + '\
+  gl.lensBlur1 =
+    gl.lensBlur1 ||
+    new Shader(
+      null,
+      common + '\
     void main() {\
       gl_FragColor = (sample(delta0) + sample(delta1)) * 0.5;\
     }\
-  ');
-  gl.lensBlur2 = gl.lensBlur2 || new Shader(null, common + '\
+  '
+    );
+  gl.lensBlur2 =
+    gl.lensBlur2 ||
+    new Shader(
+      null,
+      common +
+        '\
     void main() {\
       vec4 color = (sample(delta0) + 2.0 * texture2D(texture1, texCoord)) / 3.0;\
       gl_FragColor = pow(color, vec4(power));\
     }\
-  ').textures({ texture1: 1 });
+  '
+    ).textures({ texture1: 1 });
 
   // Generate
   var dir = [];
   for (var i = 0; i < 3; i++) {
-    var a = angle + i * Math.PI * 2 / 3;
-    dir.push([radius * Math.sin(a) / this.width, radius * Math.cos(a) / this.height]);
+    var a = angle + (i * Math.PI * 2) / 3;
+    dir.push([(radius * Math.sin(a)) / this.width, (radius * Math.cos(a)) / this.height]);
   }
   var power = Math.pow(10, clamp(-1, brightness, 1));
 
@@ -92,13 +112,25 @@ export default function(radius, brightness, angle) {
 
   // Blur two rhombi in parallel into extraTexture
   this._.extraTexture.ensureFormat(this._.texture);
-  simpleShader.call(this, gl.lensBlur0, {
-    delta0: dir[0]
-  }, this._.texture, this._.extraTexture);
-  simpleShader.call(this, gl.lensBlur1, {
-    delta0: dir[1],
-    delta1: dir[2]
-  }, this._.extraTexture, this._.extraTexture);
+  simpleShader.call(
+    this,
+    gl.lensBlur0,
+    {
+      delta0: dir[0]
+    },
+    this._.texture,
+    this._.extraTexture
+  );
+  simpleShader.call(
+    this,
+    gl.lensBlur1,
+    {
+      delta0: dir[1],
+      delta1: dir[2]
+    },
+    this._.extraTexture,
+    this._.extraTexture
+  );
 
   // Blur the last rhombus and combine with extraTexture
   simpleShader.call(this, gl.lensBlur0, {

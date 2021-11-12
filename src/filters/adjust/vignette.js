@@ -1,6 +1,6 @@
-import Shader from '../../shader'
-import {simpleShader, clamp} from '../../util'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader, clamp } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter         Vignette
@@ -8,9 +8,13 @@ import * as store from '../../store'
  * @param size     0 to 1 (0 for center of frame, 1 for edge of frame)
  * @param amount   0 to 1 (0 for no effect, 1 for maximum lens darkening)
  */
-export default function(size, amount) {
-  var gl = store.get('gl')
-  gl.vignette = gl.vignette || new Shader(null, '\
+export default function (size, amount) {
+  var gl = store.get('gl');
+  gl.vignette =
+    gl.vignette ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform float size;\
     uniform float amount;\
@@ -23,7 +27,8 @@ export default function(size, amount) {
       \
       gl_FragColor = color;\
     }\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.vignette, {
     size: clamp(0, size, 1),

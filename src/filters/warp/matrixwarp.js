@@ -1,7 +1,7 @@
-import {warpShader} from '../common'
-import {getInverse} from '../../matrix'
-import {simpleShader} from '../../util'
-import * as store from '../../store'
+import { warpShader } from '../common';
+import { getInverse } from '../../matrix';
+import { simpleShader } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter                Matrix Warp
@@ -18,28 +18,29 @@ import * as store from '../../store'
  *                        from -1 to 1 instead of 0 to width - 1 or height - 1, and are easier
  *                        to use for simple operations like flipping and rotating.
  */
-export default function(matrix, inverse, useTextureSpace) {
+export default function (matrix, inverse, useTextureSpace) {
   var gl = store.get('gl');
-  gl.matrixWarp = gl.matrixWarp || warpShader('\
+  gl.matrixWarp =
+    gl.matrixWarp ||
+    warpShader(
+      '\
     uniform mat3 matrix;\
     uniform bool useTextureSpace;\
-  ', '\
+  ',
+      '\
     if (useTextureSpace) coord = coord / texSize * 2.0 - 1.0;\
     vec3 warp = matrix * vec3(coord, 1.0);\
     coord = warp.xy / warp.z;\
     if (useTextureSpace) coord = (coord * 0.5 + 0.5) * texSize;\
-  ');
+  '
+    );
 
   // Flatten all members of matrix into one big list
   matrix = Array.prototype.concat.apply([], matrix);
 
   // Extract a 3x3 matrix out of the arguments
   if (matrix.length == 4) {
-    matrix = [
-      matrix[0], matrix[1], 0,
-      matrix[2], matrix[3], 0,
-      0, 0, 1
-    ];
+    matrix = [matrix[0], matrix[1], 0, matrix[2], matrix[3], 0, 0, 0, 1];
   } else if (matrix.length != 9) {
     throw 'can only warp with 2x2 or 3x3 matrix';
   }

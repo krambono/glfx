@@ -1,6 +1,6 @@
-import Shader from '../../shader'
-import {simpleShader, clamp} from '../../util'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader, clamp } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter           Hue / Saturation
@@ -14,9 +14,13 @@ import * as store from '../../store'
  *                   and 1 is 180 degree rotation in the positive direction)
  * @param saturation -1 to 1 (-1 is solid gray, 0 is no change, and 1 is maximum contrast)
  */
-export default function(hue, saturation) {
-  var gl = store.get('gl')
-  gl.hueSaturation = gl.hueSaturation || new Shader(null, '\
+export default function (hue, saturation) {
+  var gl = store.get('gl');
+  gl.hueSaturation =
+    gl.hueSaturation ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform float hue;\
     uniform float saturation;\
@@ -45,7 +49,8 @@ export default function(hue, saturation) {
       \
       gl_FragColor = color;\
     }\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.hueSaturation, {
     hue: clamp(-1, hue, 1),

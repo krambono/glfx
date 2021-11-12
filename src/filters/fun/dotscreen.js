@@ -1,6 +1,6 @@
-import Shader from '../../shader'
-import {simpleShader} from '../../util'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter        Dot Screen
@@ -11,9 +11,13 @@ import * as store from '../../store'
  * @param angle   The rotation of the pattern in radians.
  * @param size    The diameter of a dot in pixels.
  */
-export default function(centerX, centerY, angle, size) {
-  var gl = store.get('gl')
-  gl.dotScreen = gl.dotScreen || new Shader(null, '\
+export default function (centerX, centerY, angle, size) {
+  var gl = store.get('gl');
+  gl.dotScreen =
+    gl.dotScreen ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform vec2 center;\
     uniform float angle;\
@@ -36,7 +40,8 @@ export default function(centerX, centerY, angle, size) {
       float average = (color.r + color.g + color.b) / 3.0;\
       gl_FragColor = vec4(vec3(average * 10.0 - 5.0 + pattern()), color.a);\
     }\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.dotScreen, {
     center: [centerX, centerY],

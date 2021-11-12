@@ -1,6 +1,6 @@
-import Shader from '../../shader'
-import {simpleShader} from '../../util'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter         Denoise
@@ -10,10 +10,14 @@ import * as store from '../../store'
  *                 than zero. A value of zero just gives an 9x9 box blur and high values
  *                 give the original image, but ideal values are usually around 10-20.
  */
-export default function(exponent) {
-  var gl = store.get('gl')
+export default function (exponent) {
+  var gl = store.get('gl');
   // Do a 9x9 bilateral box filter
-  gl.denoise = gl.denoise || new Shader(null, '\
+  gl.denoise =
+    gl.denoise ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform float exponent;\
     uniform float strength;\
@@ -34,7 +38,8 @@ export default function(exponent) {
       }\
       gl_FragColor = color / total;\
     }\
-  ');
+  '
+    );
 
   // Perform two iterations for stronger results
   for (var i = 0; i < 2; i++) {

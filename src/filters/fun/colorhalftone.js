@@ -1,6 +1,6 @@
-import Shader from '../../shader'
-import {simpleShader} from '../../util'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter        Color Halftone
@@ -12,9 +12,13 @@ import * as store from '../../store'
  * @param angle   The rotation of the pattern in radians.
  * @param size    The diameter of a dot in pixels.
  */
-export default function(centerX, centerY, angle, size) {
-  var gl = store.get('gl')
-  gl.colorHalftone = gl.colorHalftone || new Shader(null, '\
+export default function (centerX, centerY, angle, size) {
+  var gl = store.get('gl');
+  gl.colorHalftone =
+    gl.colorHalftone ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform vec2 center;\
     uniform float angle;\
@@ -41,7 +45,8 @@ export default function(centerX, centerY, angle, size) {
       k = clamp(k * 10.0 - 5.0 + pattern(angle + 0.78539), 0.0, 1.0);\
       gl_FragColor = vec4(1.0 - cmy - k, color.a);\
     }\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.colorHalftone, {
     center: [centerX, centerY],

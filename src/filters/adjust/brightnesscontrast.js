@@ -1,6 +1,6 @@
-import Shader from '../../shader'
-import {simpleShader, clamp} from '../../util'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader, clamp } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter           Brightness / Contrast
@@ -8,9 +8,13 @@ import * as store from '../../store'
  * @param brightness -1 to 1 (-1 is solid black, 0 is no change, and 1 is solid white)
  * @param contrast   -1 to 1 (-1 is solid gray, 0 is no change, and 1 is maximum contrast)
  */
-export default function(brightness, contrast) {
-  var gl = store.get('gl')
-  gl.brightnessContrast = gl.brightnessContrast || new Shader(null, '\
+export default function (brightness, contrast) {
+  var gl = store.get('gl');
+  gl.brightnessContrast =
+    gl.brightnessContrast ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform float brightness;\
     uniform float contrast;\
@@ -25,7 +29,8 @@ export default function(brightness, contrast) {
       }\
       gl_FragColor = color;\
     }\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.brightnessContrast, {
     brightness: clamp(-1, brightness, 1),

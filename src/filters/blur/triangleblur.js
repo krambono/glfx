@@ -1,7 +1,7 @@
-import Shader from '../../shader'
-import {simpleShader} from '../../util'
-import {randomShaderFunc} from '../common'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader } from '../../util';
+import { randomShaderFunc } from '../common';
+import * as store from '../../store';
 
 /**
  * @filter       Triangle Blur
@@ -10,13 +10,19 @@ import * as store from '../../store'
  *               perpendicular triangle filters.
  * @param radius The radius of the pyramid convolved with the image.
  */
-export default function(radius) {
-  var gl = store.get('gl')
-  gl.triangleBlur = gl.triangleBlur || new Shader(null, '\
+export default function (radius) {
+  var gl = store.get('gl');
+  gl.triangleBlur =
+    gl.triangleBlur ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform vec2 delta;\
     varying vec2 texCoord;\
-    ' + randomShaderFunc + '\
+    ' +
+        randomShaderFunc +
+        '\
     void main() {\
       vec4 color = vec4(0.0);\
       float total = 0.0;\
@@ -41,7 +47,8 @@ export default function(radius) {
       /* switch back from pre-multiplied alpha */\
       gl_FragColor.rgb /= gl_FragColor.a + 0.00001;\
     }\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.triangleBlur, {
     delta: [radius / this.width, 0]

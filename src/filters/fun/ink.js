@@ -1,6 +1,6 @@
-import Shader from '../../shader'
-import {simpleShader} from '../../util'
-import * as store from '../../store'
+import Shader from '../../shader';
+import { simpleShader } from '../../util';
+import * as store from '../../store';
 
 /**
  * @filter         Ink
@@ -12,9 +12,13 @@ import * as store from '../../store'
  *                 of black edges. Negative strength values will create white ink edges
  *                 instead of black ones.
  */
-export default function(strength) {
+export default function (strength) {
   var gl = store.get('gl');
-  gl.ink = gl.ink || new Shader(null, '\
+  gl.ink =
+    gl.ink ||
+    new Shader(
+      null,
+      '\
     uniform sampler2D texture;\
     uniform float strength;\
     uniform vec2 texSize;\
@@ -41,7 +45,8 @@ export default function(strength) {
       vec3 edge = max(vec3(0.0), bigAverage / bigTotal - smallAverage / smallTotal);\
       gl_FragColor = vec4(color.rgb - dot(edge, edge) * strength * 100000.0, color.a);\
     }\
-  ');
+  '
+    );
 
   simpleShader.call(this, gl.ink, {
     strength: strength * strength * strength * strength * strength,
